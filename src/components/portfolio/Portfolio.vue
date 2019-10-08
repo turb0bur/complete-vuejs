@@ -1,10 +1,23 @@
 <template>
-  <h1>Portfolio component</h1>
+  <div>
+    <app-stock v-for="stock in stocks" :stock="stock"></app-stock>
+  </div>
 </template>
 
 <script>
+    import Stock        from "./Stock";
+    import {mapGetters} from 'vuex';
+
     export default {
-        name: "Portfolio"
+        name:       "Portfolio",
+        components: {
+            'appStock': Stock
+        },
+        computed:   {
+            ...mapGetters({
+                stocks: 'stockPortfolio'
+            })
+        }
     }
 </script>
 
