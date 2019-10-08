@@ -17,10 +17,8 @@
         components: {
             appHeader: Header
         },
-        data() {
-            return {
-                msg: 'Welcome to Your Vue.js App'
-            }
+        created() {
+            this.$store.dispatch('initStocks')
         }
     }
 </script>
