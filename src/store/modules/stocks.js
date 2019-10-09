@@ -1,6 +1,6 @@
 import stocks from "../../data/stocks";
 
-const state     = {
+const state = {
   stocks: []
 };
 
@@ -9,11 +9,13 @@ const mutations = {
     state.stocks = stocks;
   },
   'RND_STOCKS'(state) {
-
+    state.stocks.forEach(stock => {
+      stock.price = Math.round(stock.price * (1 + Math.random() - 0.5));
+    })
   }
 };
 
-const actions   = {
+const actions = {
   buyStock:        ({commit}, order) => {
     commit('BUY_STOCK', order)
   },
@@ -25,7 +27,7 @@ const actions   = {
   }
 };
 
-const getters   = {
+const getters = {
   stocks: state => {
     return state.stocks;
   }
