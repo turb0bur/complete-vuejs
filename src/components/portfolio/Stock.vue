@@ -5,11 +5,11 @@
         <h3 class="panel-title">{{stock.name}} <small>(Price: {{stock.price}} | Quantity: {{stock.quantity}})</small></h3>
       </div>
       <div class="panel-body">
-        <div class="pull-left">
-          <input type="number" class="form-control" placeholder="Quantity" v-model="quantity">
+        <div class="pull-left" :class="insufficientQuantity ? 'has-error' : ''">
+          <input type="number" class="form-control" placeholder="Quantity" v-model.number="quantity">
         </div>
         <div class="pull-right">
-          <button class="btn btn-success" @click="sellStock" :disabled="quantity <= 0">Sell</button>
+          <button class="btn btn-success" @click="sellStock" :disabled="insufficientQuantity || quantity <= 0 || !Number.isInteger(quantity)">Sell</button>
         </div>
       </div>
     </div>
@@ -20,14 +20,19 @@
     import {mapActions} from 'vuex';
 
     export default {
-        name:    "Stock",
-        props:   ['stock'],
+        name:     "Stock",
+        props:    ['stock'],
         data() {
             return {
                 quantity: 0
             }
         },
-        methods: {
+        computed: {
+            insufficientQuantity() {
+                return this.quantity > this.stock.quantity;
+            }
+        },
+        methods:  {
             ...mapActions({
                 placeSellOrder: 'sellStock'
             }),
