@@ -4,31 +4,19 @@
       <form @submit.prevent="onSubmit">
         <div class="input">
           <label for="email">Mail</label>
-          <input
-                  type="email"
-                  id="email"
-                  v-model="email">
+          <input type="email" id="email" v-model="email">
         </div>
         <div class="input">
           <label for="age">Your Age</label>
-          <input
-                  type="number"
-                  id="age"
-                  v-model.number="age">
+          <input type="number" id="age" v-model.number="age">
         </div>
         <div class="input">
           <label for="password">Password</label>
-          <input
-                  type="password"
-                  id="password"
-                  v-model="password">
+          <input type="password" id="password" v-model="password">
         </div>
         <div class="input">
           <label for="confirm-password">Confirm Password</label>
-          <input
-                  type="password"
-                  id="confirm-password"
-                  v-model="confirmPassword">
+          <input type="password" id="confirm-password" v-model="confirmPassword">
         </div>
         <div class="input">
           <label for="country">Country</label>
@@ -43,15 +31,11 @@
           <h3>Add some Hobbies</h3>
           <button @click="onAddHobby" type="button">Add Hobby</button>
           <div class="hobby-list">
-            <div
-                    class="input"
-                    v-for="(hobbyInput, index) in hobbyInputs"
-                    :key="hobbyInput.id">
+            <div class="input"
+                 v-for="(hobbyInput, index) in hobbyInputs"
+                 :key="hobbyInput.id">
               <label :for="hobbyInput.id">Hobby #{{ index }}</label>
-              <input
-                      type="text"
-                      :id="hobbyInput.id"
-                      v-model="hobbyInput.value">
+              <input type="text" :id="hobbyInput.id" v-model="hobbyInput.value">
               <button @click="onDeleteHobby(hobbyInput.id)" type="button">X</button>
             </div>
           </div>
@@ -69,52 +53,57 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        email: '',
-        age: null,
-        password: '',
-        confirmPassword: '',
-        country: 'usa',
-        hobbyInputs: [],
-        terms: false
-      }
-    },
-    methods: {
-      onAddHobby () {
-        const newHobby = {
-          id: Math.random() * Math.random() * 1000,
-          value: ''
+    import axios from 'axios';
+
+    export default {
+        data() {
+            return {
+                email:           '',
+                age:             null,
+                password:        '',
+                confirmPassword: '',
+                country:         'usa',
+                hobbyInputs:     [],
+                terms:           false
+            }
+        },
+        methods: {
+            onAddHobby() {
+                const newHobby = {
+                    id:    Math.random() * Math.random() * 1000,
+                    value: ''
+                };
+                this.hobbyInputs.push(newHobby)
+            },
+            onDeleteHobby(id) {
+                this.hobbyInputs = this.hobbyInputs.filter(hobby => hobby.id !== id)
+            },
+            onSubmit() {
+                const formData = {
+                    email:           this.email,
+                    age:             this.age,
+                    password:        this.password,
+                    confirmPassword: this.confirmPassword,
+                    country:         this.country,
+                    hobbies:         this.hobbyInputs.map(hobby => hobby.value),
+                    terms:           this.terms
+                };
+                console.log(formData);
+                axios.post('https://vuejs-learning-4d547.firebaseio.com/.json', formData)
+                    .then(response => console.log(response))
+                    .catch(error => console.log(error))
+            }
         }
-        this.hobbyInputs.push(newHobby)
-      },
-      onDeleteHobby (id) {
-        this.hobbyInputs = this.hobbyInputs.filter(hobby => hobby.id !== id)
-      },
-      onSubmit () {
-        const formData = {
-          email: this.email,
-          age: this.age,
-          password: this.password,
-          confirmPassword: this.confirmPassword,
-          country: this.country,
-          hobbies: this.hobbyInputs.map(hobby => hobby.value),
-          terms: this.terms
-        }
-        console.log(formData)
-      }
     }
-  }
 </script>
 
 <style scoped>
   .signup-form {
     width: 400px;
     margin: 30px auto;
-    border: 1px solid #eee;
+    border: 1px solid #eeeeee;
     padding: 20px;
-    box-shadow: 0 2px 3px #ccc;
+    box-shadow: 0 2px 3px #cccccc;
   }
 
   .input {
@@ -136,7 +125,7 @@
     width: 100%;
     padding: 6px 12px;
     box-sizing: border-box;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
   }
 
   .input.inline input {
@@ -146,11 +135,11 @@
   .input input:focus {
     outline: none;
     border: 1px solid #521751;
-    background-color: #eee;
+    background-color: #eeeeee;
   }
 
   .input select {
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     font: inherit;
   }
 
@@ -189,9 +178,9 @@
   .submit button[disabled],
   .submit button[disabled]:hover,
   .submit button[disabled]:active {
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     background-color: transparent;
-    color: #ccc;
+    color: #cccccc;
     cursor: not-allowed;
   }
 </style>
