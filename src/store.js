@@ -9,7 +9,12 @@ export default new Vuex.Store({
     idToken: null,
     userId:  null
   },
-  mutations: {},
+  mutations: {
+    authUser(state, userData) {
+      state.idToken = userData.token;
+      state.userId  = userData.userId;
+    }
+  },
   actions:   {
     signup({commit}, authData) {
       axios.post('/accounts:signUp?key=AIzaSyC9LMd_cDiHTpdysIvHI-ARuK_KftPPkGg', {
@@ -17,7 +22,13 @@ export default new Vuex.Store({
         password:          authData.password,
         returnSecureToken: true
       })
-        .then(response => console.log(response))
+        .then(response => {
+          console.log(response);
+          commit('authUser', {
+            token:  response.data.idToken,
+            userId: response.data.localId
+          })
+        })
         .catch(error => console.error(error))
     },
     login({commit}, authData) {
@@ -26,7 +37,13 @@ export default new Vuex.Store({
         password:          authData.password,
         returnSecureToken: true
       })
-        .then(response => console.log(response))
+        .then(response => {
+          console.log(response);
+          commit('authUser', {
+            token:  response.data.idToken,
+            userId: response.data.localId
+          })
+        })
         .catch(error => console.error(error))
     }
   },
