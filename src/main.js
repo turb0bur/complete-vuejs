@@ -4,9 +4,7 @@ import axios  from 'axios'
 import router from './router'
 import store  from './store'
 
-axios.defaults.baseURL                         = 'https://vuejs-learning-4d547.firebaseio.com';
-axios.defaults.headers.common['Authorization'] = 'qwerty';
-axios.defaults.headers.get['Accepts']          = 'application/json';
+axios.defaults.baseURL = 'https://vuejs-learning-4d547.firebaseio.com';
 
 const requestInterceptor = axios.interceptors.request.use(config => {
   console.log('Request interceptor', config);

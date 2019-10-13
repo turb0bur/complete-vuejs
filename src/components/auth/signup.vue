@@ -53,7 +53,7 @@
 </template>
 
 <script>
-    import axios from 'axios';
+    import axios from '../../axios-auth';
 
     export default {
         data() {
@@ -89,7 +89,11 @@
                     terms:           this.terms
                 };
                 console.log(formData);
-                axios.post('https://vuejs-learning-4d547.firebaseio.com/users.json', formData)
+                axios.post('/accounts:signUp?key=AIzaSyC9LMd_cDiHTpdysIvHI-ARuK_KftPPkGg', {
+                    email:             formData.email,
+                    password:          formData.password,
+                    returnSecureToken: true
+                })
                     .then(response => console.log(response))
                     .catch(error => console.error(error))
             }
