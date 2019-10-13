@@ -91,7 +91,7 @@
                 console.log(formData);
                 axios.post('https://vuejs-learning-4d547.firebaseio.com/.json', formData)
                     .then(response => console.log(response))
-                    .catch(error => console.log(error))
+                    .catch(error => console.error(error))
             }
         }
     }
