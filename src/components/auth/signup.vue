@@ -20,9 +20,10 @@
           <p v-if="$v.password.required">This field must not be empty</p>
           <p v-if="!$v.password.minVal">This field must have at least {{$v.password.$params.minLen.min}} characters</p>
         </div>
-        <div class="input">
+        <div class="input" :class="{invalid: $v.confirmPassword.$error}">
           <label for="confirm-password">Confirm Password</label>
-          <input type="password" id="confirm-password" v-model="confirmPassword">
+          <input type="password" id="confirm-password" @blur="$v.confirmPassword.$touch" v-model="confirmPassword">
+          <p v-if="!$v.confirmPassword.sameAs">Please make sure your passwords match</p>
         </div>
         <div class="input">
           <label for="country">Country</label>
@@ -59,7 +60,7 @@
 </template>
 
 <script>
-    import {required, email, numeric, minValue, minLength} from 'vuelidate/lib/validators'
+    import {required, email, numeric, minValue, minLength, sameAs} from 'vuelidate/lib/validators'
 
     export default {
         data() {
@@ -86,6 +87,9 @@
             password: {
                 required,
                 minLen: minLength(6)
+            },
+            confirmPassword: {
+                sameAs: sameAs('password')
             }
         },
         methods:     {
