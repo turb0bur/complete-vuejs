@@ -14,16 +14,27 @@
         <li v-if="auth">
           <router-link to="/dashboard">Dashboard</router-link>
         </li>
+        <li v-if="auth">
+          <button @click="onLogout" class="logout">Logout</button>
+        </li>
       </ul>
     </nav>
   </header>
 </template>
 
 <script>
+    import router from '../../router';
+
     export default {
         computed: {
             auth() {
                 return this.$store.getters.isAuthenticated;
+            }
+        },
+        methods:  {
+            onLogout() {
+                this.$store.dispatch('logout');
+                router.replace('/signin');
             }
         }
     }
@@ -77,5 +88,13 @@
   li a:active,
   li a.router-link-active {
     color: #fa923f;
+  }
+
+  .logout {
+    background: transparent;
+    border: none;
+    font: inherit;
+    color: white;
+    cursor: pointer;
   }
 </style>

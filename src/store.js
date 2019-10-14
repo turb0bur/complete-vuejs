@@ -2,6 +2,7 @@ import Vue         from 'vue'
 import Vuex        from 'vuex'
 import axios       from './axios-auth'
 import globalAxios from 'axios'
+import router      from "./router"
 
 Vue.use(Vuex);
 
@@ -18,9 +19,20 @@ export default new Vuex.Store({
     },
     storeUser(state, user) {
       state.user = user;
+    },
+    clearAuthData(state) {
+      state.idToken = null;
+      state.email   = null;
+      state.user    = null;
     }
   },
   actions:   {
+    setLogoutTimer({commit}, expirationTime) {
+      setTimeout(() => {
+        commit('clearAuthData');
+        router.replace('/signin');
+      }, expirationTime * 1000)
+    },
     signup({commit, dispatch}, authData) {
       axios.post('/accounts:signUp?key=AIzaSyC9LMd_cDiHTpdysIvHI-ARuK_KftPPkGg', {
         email:             authData.email,
@@ -34,10 +46,11 @@ export default new Vuex.Store({
             email: response.data.email
           });
           dispatch('storeUser', authData);
+          dispatch('setLogoutTimer', response.data.expiresIn);
         })
         .catch(error => console.error(error))
     },
-    login({commit}, authData) {
+    login({commit, dispatch}, authData) {
       axios.post('/accounts:signInWithPassword?key=AIzaSyC9LMd_cDiHTpdysIvHI-ARuK_KftPPkGg', {
         email:             authData.email,
         password:          authData.password,
@@ -48,9 +61,13 @@ export default new Vuex.Store({
           commit('authUser', {
             token: response.data.idToken,
             email: response.data.email
-          })
+          });
+          dispatch('setLogoutTimer', response.data.expiresIn);
         })
         .catch(error => console.error(error))
+    },
+    logout({commit}) {
+      commit('clearAuthData');
     },
     storeUser({commit, state}, userData) {
       if (!state.idToken) {
@@ -86,7 +103,7 @@ export default new Vuex.Store({
     user(state) {
       return state.user;
     },
-    isAuthenticated(state){
+    isAuthenticated(state) {
       return state.idToken !== null;
     }
   }
