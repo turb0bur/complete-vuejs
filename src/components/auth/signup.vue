@@ -5,18 +5,20 @@
         <div class="input" :class="{invalid: $v.email.$error}">
           <label for="email">Mail</label>
           <input type="email" id="email" @blur="$v.email.$touch" v-model="email">
-          <p v-if="!$v.email.required">This field must not be empty</p>
+          <p v-if="$v.email.required">This field must not be empty</p>
           <p v-if="!$v.email.email">Please provide a valid email address</p>
         </div>
         <div class="input" :class="{invalid: $v.age.$error}">
           <label for="age">Your Age</label>
           <input type="number" id="age" @blur="$v.age.$touch" v-model.number="age">
-          <p v-if="!$v.age.required">This field must not be empty</p>
+          <p v-if="$v.age.required">This field must not be empty</p>
           <p v-if="!$v.age.minVal">You have to be at least {{$v.age.$params.minVal.min}}</p>
         </div>
-        <div class="input">
+        <div class="input" :class="{invalid: $v.password.$error}">
           <label for="password">Password</label>
-          <input type="password" id="password" v-model="password">
+          <input type="password" id="password" @blur="$v.password.$touch" v-model="password">
+          <p v-if="$v.password.required">This field must not be empty</p>
+          <p v-if="!$v.password.minVal">This field must have at least {{$v.password.$params.minLen.min}} characters</p>
         </div>
         <div class="input">
           <label for="confirm-password">Confirm Password</label>
@@ -57,7 +59,7 @@
 </template>
 
 <script>
-    import {required, email, numeric, minValue} from 'vuelidate/lib/validators'
+    import {required, email, numeric, minValue, minLength} from 'vuelidate/lib/validators'
 
     export default {
         data() {
@@ -80,6 +82,10 @@
                 required,
                 numeric,
                 minVal: minValue(18)
+            },
+            password: {
+                required,
+                minLen: minLength(6)
             }
         },
         methods:     {
