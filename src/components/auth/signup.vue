@@ -18,7 +18,7 @@
           <label for="password">Password</label>
           <input type="password" id="password" @blur="$v.password.$touch" v-model="password">
           <p v-if="$v.password.required">This field must not be empty</p>
-          <p v-if="!$v.password.minVal">This field must have at least {{$v.password.$params.minLen.min}} characters</p>
+          <p v-if="!$v.password.minLen">This field must have at least {{$v.password.$params.minLen.min}} characters</p>
         </div>
         <div class="input" :class="{invalid: $v.confirmPassword.$error}">
           <label for="confirm-password">Confirm Password</label>
@@ -40,11 +40,15 @@
           <div class="hobby-list">
             <div class="input"
                  v-for="(hobbyInput, index) in hobbyInputs"
+                 :class="{invalid: $v.hobbyInputs.$each[index].$error}"
                  :key="hobbyInput.id">
               <label :for="hobbyInput.id">Hobby #{{ index }}</label>
-              <input type="text" :id="hobbyInput.id" v-model="hobbyInput.value">
+              <input type="text" :id="hobbyInput.id" @blur="$v.hobbyInputs.$each[index].value.$touch" v-model="hobbyInput.value">
               <button @click="onDeleteHobby(hobbyInput.id)" type="button">X</button>
+              <p v-if="!$v.hobbyInputs.$each[index].value.minLen">This field must have at least {{$v.hobbyInputs.$each[index].value.$params.minLen.min}} characters</p>
             </div>
+            <p v-if="$v.hobbyInputs.required"></p>
+            <p v-if="!$v.hobbyInputs.minLen">You have to specify at least {{$v.hobbyInputs.$params.minLen.min}} hobbies</p>
           </div>
         </div>
         <div class="input inline" :class="{invalid: $v.terms.$error}">
@@ -96,11 +100,21 @@
                 req: requiredUnless(vm => {
                     return vm.country === 'germany';
                 })
+            },
+            hobbyInputs:     {
+                required,
+                minLen: minLength(2),
+                $each:  {
+                    value: {
+                        required,
+                        minLen: minLength(5)
+                    }
+                }
             }
         },
         computed:    {
             capitalizedCountry() {
-                if(this.country === 'usa'){
+                if (this.country === 'usa') {
                     return this.country.toUpperCase();
                 } else {
                     return this.country.charAt(0).toUpperCase() + this.country.slice(1);
