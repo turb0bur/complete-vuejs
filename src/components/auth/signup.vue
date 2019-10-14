@@ -47,9 +47,10 @@
             </div>
           </div>
         </div>
-        <div class="input inline">
-          <input type="checkbox" id="terms" v-model="terms">
+        <div class="input inline" :class="{invalid: $v.terms.$error}">
+          <input type="checkbox" id="terms" @click="$v.terms.$touch" v-model="terms">
           <label for="terms">Accept Terms of Use</label>
+          <p v-if="!$v.terms.req">For citizens of {{capitalizedCountry}} this field is required</p>
         </div>
         <div class="submit">
           <button type="submit">Submit</button>
@@ -60,7 +61,7 @@
 </template>
 
 <script>
-    import {required, email, numeric, minValue, minLength, sameAs} from 'vuelidate/lib/validators'
+    import {required, email, numeric, minValue, minLength, sameAs, requiredUnless} from 'vuelidate/lib/validators'
 
     export default {
         data() {
@@ -75,21 +76,35 @@
             }
         },
         validations: {
-            email: {
+            email:           {
                 required,
                 email
             },
-            age:   {
+            age:             {
                 required,
                 numeric,
                 minVal: minValue(18)
             },
-            password: {
+            password:        {
                 required,
                 minLen: minLength(6)
             },
             confirmPassword: {
                 sameAs: sameAs('password')
+            },
+            terms:           {
+                req: requiredUnless(vm => {
+                    return vm.country === 'germany';
+                })
+            }
+        },
+        computed:    {
+            capitalizedCountry() {
+                if(this.country === 'usa'){
+                    return this.country.toUpperCase();
+                } else {
+                    return this.country.charAt(0).toUpperCase() + this.country.slice(1);
+                }
             }
         },
         methods:     {
@@ -155,16 +170,6 @@
     width: auto;
   }
 
-  .input.invalid label,
-  .input.invalid p {
-    color: red;
-  }
-
-  .input.invalid input {
-    border: 1px solid red;
-    background-color: rgba(255, 0, 0, .1);
-  }
-
   .input input:focus {
     outline: none;
     border: 1px solid #521751;
@@ -174,6 +179,17 @@
   .input select {
     border: 1px solid #cccccc;
     font: inherit;
+  }
+
+
+  .input.invalid label,
+  .input.invalid p {
+    color: red;
+  }
+
+  .input.invalid input {
+    border: 1px solid red;
+    background-color: rgba(255, 0, 0, .1);
   }
 
   .hobbies button {
