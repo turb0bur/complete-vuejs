@@ -57,7 +57,7 @@
           <p v-if="!$v.terms.req">For citizens of {{capitalizedCountry}} this field is required</p>
         </div>
         <div class="submit">
-          <button type="submit">Submit</button>
+          <button type="submit" :disabled="$v.$invalid">Submit</button>
         </div>
       </form>
     </div>
